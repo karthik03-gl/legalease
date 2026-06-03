@@ -41,7 +41,7 @@
   flex-shrink: 0;
 }
 .filter-chip.active { background: var(--blue); color: white; }
-.filter-chip:not(.active) { background: white; color: var(--text-mid); border: 1px solid var(--border); }
+.filter-chip:not(.active) { background: var(--card); color: var(--text-mid); border: 1px solid var(--border); }
 .filter-chip:not(.active):hover { border-color: var(--blue); color: var(--blue); }
 
 /* Docs body */
@@ -56,7 +56,7 @@
 
 /* Doc card */
 .doc-list-card {
-  background: white; border-radius: var(--r-md);
+  background: var(--card); border-radius: var(--r-md);
   border: 1px solid var(--border); padding: 14px;
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 10px; cursor: pointer;

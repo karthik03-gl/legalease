@@ -38,7 +38,7 @@
   width: 80px;
   height: 80px;
   border-radius: 20px;
-  background: white;
+  background: var(--card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,7 +102,7 @@
   transition: all 0.3s ease;
 }
 .dot-indicator.active {
-  background: white;
+  background: var(--card);
   width: 24px !important;
 }
 
@@ -112,7 +112,7 @@
   padding: 16px;
   border-radius: var(--r-lg);
   border: none;
-  background: white;
+  background: var(--card);
   color: var(--blue);
   font-family: var(--font-display);
   font-size: 16px;

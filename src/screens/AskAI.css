@@ -35,7 +35,7 @@
   font-size: 13px; line-height: 1.6; position: relative;
 }
 .msg-bubble.ai {
-  background: white; color: var(--text-dark);
+  background: var(--card); color: var(--text-dark);
   border: 1px solid var(--border); border-bottom-left-radius: 4px;
   box-shadow: var(--shadow-sm);
 }
@@ -55,7 +55,7 @@
 /* Quick prompt chips */
 .quick-chips { padding: 0 16px 10px; display: flex; gap: 7px; flex-wrap: wrap; }
 .quick-chip {
-  background: white; border: 1.5px solid var(--blue-mid);
+  background: var(--card); border: 1.5px solid var(--blue-mid);
   color: var(--blue); border-radius: 20px;
   padding: 6px 14px; font-size: 12px; font-weight: 600;
   cursor: pointer; font-family: var(--font-body); transition: all 0.15s; white-space: nowrap;
@@ -64,7 +64,7 @@
 
 /* Input bar */
 .chat-input-bar {
-  background: white; border-top: 1px solid var(--border);
+  background: var(--card); border-top: 1px solid var(--border);
   padding: 10px 14px 24px; display: flex; gap: 10px; align-items: flex-end;
   flex-shrink: 0;
 }
@@ -75,7 +75,7 @@
   transition: border-color 0.15s; max-height: 100px; line-height: 1.5;
   background: var(--bg);
 }
-.chat-textarea:focus { border-color: var(--blue); background: white; }
+.chat-textarea:focus { border-color: var(--blue); background: var(--card); }
 .chat-textarea::placeholder { color: var(--text-light); }
 .chat-send {
   width: 46px; height: 46px; border-radius: 14px; background: var(--blue);

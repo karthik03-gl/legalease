@@ -12,7 +12,6 @@ import OTPVerifyScreen  from './screens/OTPVerify';
 import ForgotScreen     from './screens/Forgot';
 import HomeScreen       from './screens/Home';
 import UploadScreen     from './screens/Upload';
-import ScanScreen       from './screens/Scan';
 import ProcessingScreen from './screens/Processing';
 import ResultsScreen    from './screens/Results';
 import DocumentsScreen  from './screens/Documents';
@@ -21,7 +20,7 @@ import SettingsScreen   from './screens/Settings';
 
 const ALL_SCREENS = [
   'onboarding','login','register','otp',
-  'home','upload','scan','processing','results',
+  'home','upload','processing','results',
   'documents','askai','settings'
 ];
 
@@ -157,8 +156,8 @@ export default function App() {
       <HomeScreen
         user={authUser}
         userData={userData}
-        onUpload={() => go('upload')}
-        onScan={() => go('scan')}
+        onUpload={() => { setUploadData(null); go('upload'); }}
+        onScanPhoto={(file) => { setUploadData({ initialFile: file }); go('upload'); }}
         onDoc={() => { setUploadData(null); go('processing'); }}
         onNav={handleNav}
       />
@@ -166,15 +165,9 @@ export default function App() {
 
     upload: (
       <UploadScreen
+        initialFile={uploadData?.initialFile}
         onBack={() => goBack('home')}
         onAnalyse={(data) => { setUploadData(data); go('processing'); }}
-      />
-    ),
-
-    scan: (
-      <ScanScreen
-        onBack={() => goBack('home')}
-        onCapture={() => { setUploadData(null); go('processing'); }}
       />
     ),
 
@@ -199,7 +192,7 @@ export default function App() {
       <DocumentsScreen
         user={authUser}
         onDoc={() => { setUploadData(null); go('processing'); }}
-        onUpload={() => go('upload')}
+        onUpload={() => { setUploadData(null); go('upload'); }}
         onNav={handleNav}
       />
     ),
@@ -224,19 +217,6 @@ export default function App() {
         <div key={screen} className={`screen ${animClass}`}>
           {screens[screen]}
         </div>
-      </div>
-
-      {/* Dev nav */}
-      <div style={{ display:'flex', gap:5, flexWrap:'wrap', maxWidth:440, justifyContent:'center' }}>
-        {ALL_SCREENS.map(s => (
-          <button key={s} onClick={() => go(s)} style={{
-            padding:'3px 10px', borderRadius:20, border:'none', cursor:'pointer',
-            background: screen === s ? 'white' : 'rgba(255,255,255,0.18)',
-            color: screen === s ? '#1D4ED8' : 'rgba(255,255,255,0.6)',
-            fontSize:10, fontWeight: screen === s ? 700 : 400,
-            fontFamily:'monospace', transition:'all 0.2s',
-          }}>{s}</button>
-        ))}
       </div>
     </>
   );

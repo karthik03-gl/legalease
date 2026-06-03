@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { StatusBar, BottomNav } from '../components/Layout';
 import Icon from '../components/Icon';
 import './Home.css';
@@ -15,7 +16,32 @@ const STATS = [
   { val: '< 5s',   label: 'Avg. time'        },
 ];
 
-export default function HomeScreen({ onScan, onUpload, onDoc, onNav }) {
+export default function HomeScreen({ onScanPhoto, onUpload, onDoc, onNav }) {
+  const [scanning, setScanning] = useState(false);
+
+  const handleScan = async () => {
+    try {
+      setScanning(true);
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera
+      });
+      
+      // Convert webPath to a File object
+      const response = await fetch(image.webPath);
+      const blob = await response.blob();
+      const file = new File([blob], "scanned-document.jpg", { type: "image/jpeg" });
+      
+      setScanning(false);
+      if (onScanPhoto) onScanPhoto(file);
+    } catch (e) {
+      setScanning(false);
+      console.log('User cancelled scan or error occurred', e);
+    }
+  };
+
   return (
     <div className="screen home-screen">
       {/* Blue gradient header */}
@@ -54,11 +80,11 @@ export default function HomeScreen({ onScan, onUpload, onDoc, onNav }) {
             <div className="action-label">Upload</div>
             <div className="action-sub">From gallery</div>
           </button>
-          <button className="action-card action-secondary" onClick={onScan}>
+          <button className="action-card action-secondary" onClick={handleScan} disabled={scanning}>
             <div className="action-icon">
               <Icon name="camera" size={22} color="#2563EB" />
             </div>
-            <div className="action-label">Scan</div>
+            <div className="action-label">{scanning ? 'Opening...' : 'Scan'}</div>
             <div className="action-sub">Use camera</div>
           </button>
         </div>

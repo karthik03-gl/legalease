@@ -23,7 +23,7 @@
 }
 .logo-box {
   width: 54px; height: 54px; border-radius: 18px;
-  background: white;
+  background: var(--card);
   display: flex; flex-direction: column;
   justify-content: center; gap: 4px; padding: 11px;
 }
@@ -42,7 +42,7 @@
 .login-body { padding: 0 18px 28px; flex: 1; }
 
 .login-card {
-  background: white;
+  background: var(--card);
   border-radius: var(--r-xl);
   padding: 28px 22px 24px;
   margin-top: -22px;
@@ -66,7 +66,7 @@
 .google-btn {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 13px 16px; border-radius: var(--r-sm);
-  border: 1.5px solid var(--border); background: white;
+  border: 1.5px solid var(--border); background: var(--card);
   cursor: pointer; font-family: var(--font-body);
   font-size: 14px; font-weight: 500; color: var(--text-dark);
   transition: background 0.15s; margin-top: 14px;

@@ -16,7 +16,7 @@
 .drop-zone {
   border: 2px dashed var(--border-mid);
   border-radius: var(--r-xl);
-  background: white;
+  background: var(--card);
   padding: 36px 20px;
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@
 
 /* File preview */
 .file-preview {
-  background: white; border-radius: var(--r-lg);
+  background: var(--card); border-radius: var(--r-lg);
   border: 1px solid var(--border); padding: 16px;
   display: flex; align-items: center; gap: 14px;
   box-shadow: var(--shadow-sm);
@@ -96,7 +96,7 @@
 }
 .doc-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .doc-type-card {
-  background: white; border: 1.5px solid var(--border);
+  background: var(--card); border: 1.5px solid var(--border);
   border-radius: var(--r-md); padding: 14px 12px;
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   cursor: pointer; transition: all 0.15s; text-align: center;
@@ -110,7 +110,7 @@
 /* Language selector */
 .lang-selector { display: flex; gap: 10px; }
 .lang-card {
-  flex: 1; background: white; border: 1.5px solid var(--border);
+  flex: 1; background: var(--card); border: 1.5px solid var(--border);
   border-radius: var(--r-md); padding: 12px;
   display: flex; flex-direction: column; align-items: center; gap: 5px;
   cursor: pointer; transition: all 0.15s;
