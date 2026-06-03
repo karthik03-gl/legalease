@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Environment (NEVER commit your API key!)
+.env.local
+.env
+
+# Build output
+build/
+.DS_Store

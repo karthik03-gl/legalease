@@ -1,0 +1,87 @@
+/* ── Login Screen ── */
+.login-screen { background: var(--bg); }
+
+.login-header {
+  background: linear-gradient(155deg, #1D4ED8 0%, #2563EB 55%, #3B82F6 100%);
+  flex-shrink: 0;
+  padding-bottom: 40px;
+}
+
+.login-logo-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px 24px;
+  gap: 14px;
+}
+
+.logo-ring {
+  width: 80px; height: 80px; border-radius: 26px;
+  background: rgba(255,255,255,0.16);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 10px rgba(255,255,255,0.07);
+}
+.logo-box {
+  width: 54px; height: 54px; border-radius: 18px;
+  background: white;
+  display: flex; flex-direction: column;
+  justify-content: center; gap: 4px; padding: 11px;
+}
+.logo-line { border-radius: 2px; background: #2563EB; height: 3px; }
+
+.login-app-name {
+  font-family: var(--font-display);
+  font-size: 30px; font-weight: 700; color: white; letter-spacing: -0.6px;
+}
+.login-tagline {
+  font-size: 13px; color: rgba(255,255,255,0.78);
+  text-align: center; line-height: 1.55; padding: 0 32px;
+}
+
+/* Form card */
+.login-body { padding: 0 18px 28px; flex: 1; }
+
+.login-card {
+  background: white;
+  border-radius: var(--r-xl);
+  padding: 28px 22px 24px;
+  margin-top: -22px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.form-welcome { font-family: var(--font-display); font-size: 21px; font-weight: 700; color: var(--text-dark); }
+.form-sub     { font-size: 13px; color: var(--text-mid); margin: 4px 0 22px; }
+
+.field-group { margin-bottom: 14px; }
+.field-label {
+  display: block;
+  font-size: 11px; font-weight: 600; color: var(--text-mid);
+  letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 6px;
+}
+
+.forgot-row  { text-align: right; margin-top: -8px; margin-bottom: 18px; }
+.forgot-link { font-size: 12px; color: var(--blue); font-weight: 600; cursor: pointer; }
+.forgot-link:hover { text-decoration: underline; }
+
+.google-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 13px 16px; border-radius: var(--r-sm);
+  border: 1.5px solid var(--border); background: white;
+  cursor: pointer; font-family: var(--font-body);
+  font-size: 14px; font-weight: 500; color: var(--text-dark);
+  transition: background 0.15s; margin-top: 14px;
+}
+.google-btn:hover { background: var(--bg); }
+
+.signup-row {
+  text-align: center; margin-top: 18px;
+  font-size: 13px; color: var(--text-mid);
+}
+.signup-link { color: var(--blue); font-weight: 700; cursor: pointer; }
+.signup-link:hover { text-decoration: underline; }
+
+.terms-text {
+  text-align: center; margin-top: 10px;
+  font-size: 11px; color: var(--text-light); line-height: 1.5;
+  padding: 0 10px;
+}

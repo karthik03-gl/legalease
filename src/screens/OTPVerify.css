@@ -1,0 +1,20 @@
+.otp-screen { background: var(--bg); }
+.otp-header { background: linear-gradient(155deg, #1D4ED8 0%, #2563EB 55%, #3B82F6 100%); padding: 0 18px 32px; flex-shrink: 0; }
+.otp-icon-wrap { width:72px; height:72px; border-radius:22px; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; margin-bottom:14px; }
+.otp-header-title { font-family:var(--font-display); font-size:22px; font-weight:700; color:white; }
+.otp-header-sub   { font-size:13px; color:rgba(255,255,255,0.78); margin-top:4px; line-height:1.5; }
+.otp-body { padding:0 18px 28px; }
+.otp-card { background:white; border-radius:var(--r-xl); padding:28px 22px; margin-top:-18px; box-shadow:0 12px 48px rgba(0,0,0,0.12); }
+.otp-inputs { display:flex; gap:10px; justify-content:center; margin:24px 0; }
+.otp-input {
+  width:48px; height:56px; border-radius:14px; border:2px solid var(--border);
+  background:var(--bg); font-family:var(--font-display); font-size:22px; font-weight:700;
+  color:var(--text-dark); text-align:center; outline:none; transition:all 0.15s;
+}
+.otp-input:focus { border-color:var(--blue); background:white; box-shadow:0 0 0 3px rgba(37,99,235,0.12); }
+.otp-input.filled { border-color:var(--blue); background:var(--blue-light); }
+.otp-input.error  { border-color:#EF4444; background:#FEF2F2; }
+.resend-row { display:flex; justify-content:center; align-items:center; gap:6px; margin-top:16px; font-size:13px; color:var(--text-mid); }
+.resend-btn { color:var(--blue); font-weight:700; cursor:pointer; background:none; border:none; font-family:var(--font-body); font-size:13px; padding:0; }
+.resend-btn:disabled { color:var(--text-light); cursor:not-allowed; }
+.timer-badge { background:var(--blue-light); color:var(--blue); padding:2px 10px; border-radius:20px; font-size:12px; font-weight:700; font-family:monospace; }

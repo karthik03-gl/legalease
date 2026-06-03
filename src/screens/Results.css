@@ -1,0 +1,95 @@
+/* ── Results Screen ── */
+.results-screen { background: var(--bg); }
+
+.results-body {
+  padding: 14px 18px 16px;
+}
+
+/* Language toggle */
+.lang-toggle {
+  display: flex; background: var(--bg); border-radius: 13px;
+  padding: 3px; margin-bottom: 16px;
+  border: 1.5px solid var(--border);
+}
+.lang-opt {
+  flex: 1; text-align: center; padding: 9px;
+  border-radius: 10px; font-size: 13px; font-weight: 500;
+  color: var(--text-mid); cursor: pointer; transition: all 0.2s; border: none; background: none;
+}
+.lang-opt.active {
+  background: var(--blue); color: white; font-weight: 700;
+  box-shadow: var(--shadow-blue);
+}
+
+/* Result cards */
+.result-card {
+  border-radius: var(--r-md); padding: 14px 16px;
+  margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.result-card::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+}
+.result-card.r-summary  { background: #EFF6FF; }
+.result-card.r-summary::before { background: #2563EB; }
+.result-card.r-important { background: #FFFBEB; }
+.result-card.r-important::before { background: #F59E0B; }
+.result-card.r-meaning  { background: #ECFDF5; }
+.result-card.r-meaning::before { background: #10B981; }
+
+.result-tag {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 7px;
+  display: flex; align-items: center; gap: 5px;
+}
+.r-summary  .result-tag { color: #1D4ED8; }
+.r-important .result-tag { color: #92400E; }
+.r-meaning  .result-tag { color: #065F46; }
+
+.result-text {
+  font-size: 13px; line-height: 1.65; color: var(--text-dark);
+}
+
+/* Ask a question */
+.ask-section { margin-top: 4px; }
+.ask-title { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; }
+.ask-input-row { display: flex; gap: 10px; }
+.ask-input {
+  flex: 1; padding: 13px 14px; border-radius: var(--r-sm);
+  border: 1.5px solid var(--border); background: white;
+  font-family: var(--font-body); font-size: 13px; color: var(--text-dark); outline: none;
+  transition: border-color 0.15s;
+}
+.ask-input:focus { border-color: var(--blue); }
+.ask-input::placeholder { color: var(--text-light); }
+.ask-send {
+  width: 48px; height: 48px; border-radius: 13px;
+  background: var(--blue); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: white; transition: background 0.15s; box-shadow: var(--shadow-blue);
+}
+.ask-send:hover { background: var(--blue-dark); }
+
+/* AI reply bubble */
+.ai-reply {
+  margin-top: 14px; background: white; border-radius: var(--r-md);
+  padding: 14px 16px; border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm); animation: fadeUp 0.3s ease;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.ai-reply-label { font-size: 10px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.ai-reply-text  { font-size: 13px; line-height: 1.6; color: var(--text-dark); }
+
+/* Action buttons at bottom */
+.results-actions { display: flex; gap: 10px; margin-top: 16px; padding-bottom: 4px; }
+.results-actions .btn { flex: 1; font-size: 13px; padding: 12px; }
+
+/* ── 3-language toggle update ── */
+.lang-toggle { display: flex; background: var(--bg); border-radius: 13px; padding: 3px; margin-bottom: 16px; border: 1.5px solid var(--border); gap: 3px; }
+.lang-opt {
+  flex: 1; text-align: center; padding: 8px 4px; border-radius: 10px;
+  font-size: 12px; font-weight: 500; color: var(--text-mid);
+  cursor: pointer; transition: all 0.2s; border: none; background: none;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.lang-opt.active { background: var(--blue); color: white; font-weight: 700; box-shadow: var(--shadow-blue); }
