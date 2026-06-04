@@ -16,12 +16,13 @@ import ProcessingScreen from './screens/Processing';
 import ResultsScreen    from './screens/Results';
 import DocumentsScreen  from './screens/Documents';
 import AskAIScreen      from './screens/AskAI';
+import ProfileScreen    from './screens/Profile';
 import SettingsScreen   from './screens/Settings';
 
 const ALL_SCREENS = [
   'onboarding','login','register','otp',
   'home','upload','processing','results',
-  'documents','askai','settings'
+  'documents','askai','profile','settings'
 ];
 
 export default function App() {
@@ -198,6 +199,14 @@ export default function App() {
     ),
 
     askai: <AskAIScreen onNav={handleNav} />,
+
+    profile: (
+      <ProfileScreen
+        user={authUser}
+        userData={userData}
+        onBack={() => goBack('settings')}
+      />
+    ),
 
     settings: (
       <SettingsScreen

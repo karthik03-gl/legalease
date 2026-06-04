@@ -177,6 +177,20 @@ export async function saveDocumentAnalysis(uid, data) {
   });
 }
 
+// ── Update User Profile ────────────────────────────────────
+export async function updateUserProfile(uid, name) {
+  const user = auth.currentUser;
+  if (user) {
+    await updateProfile(user, { displayName: name });
+  }
+  await setDoc(doc(db, 'users', uid), { name }, { merge: true });
+}
+
+// ── Update User Preferences ────────────────────────────────
+export async function updateUserPreferences(uid, prefs) {
+  await setDoc(doc(db, 'users', uid), prefs, { merge: true });
+}
+
 // ── Password Reset ─────────────────────────────────────────
 export async function resetPassword(email) {
   await sendPasswordResetEmail(auth, email);

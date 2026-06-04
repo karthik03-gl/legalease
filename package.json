@@ -19,7 +19,9 @@
     "build": "react-scripts build",
     "cap:sync": "npm run build && npx cap sync"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
