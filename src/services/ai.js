@@ -4,7 +4,7 @@
  */
 
 export function friendlyError(code) {
-  const API_BASE = window.Capacitor?.isNativePlatform() ? (process.env.REACT_APP_PRODUCTION_URL || '') : '';
+  const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
   if (!code) return 'Something went wrong. Please try again.';
   const MAP = {
     SERVER_DOWN:          'Proxy server is not running.\nFix: open a terminal → run: node server.js',
@@ -25,7 +25,7 @@ export async function checkHealth() {
   try {
     const ctrl = new AbortController();
     const id   = setTimeout(() => ctrl.abort(), 5000);
-    const API_BASE = window.Capacitor?.isNativePlatform() ? (process.env.REACT_APP_PRODUCTION_URL || '') : '';
+    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
     const res  = await fetch(`${API_BASE}/api/health`, { signal: ctrl.signal });
     clearTimeout(id);
     if (!res.ok) return { ok: false, keyFound: false };
@@ -58,7 +58,7 @@ export const readFileBase64 = file => new Promise(resolve => {
 async function callOCR(base64Image) {
   let res;
   try {
-    const API_BASE = window.Capacitor?.isNativePlatform() ? (process.env.REACT_APP_PRODUCTION_URL || '') : '';
+    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
     res = await fetch(`${API_BASE}/api/ocr`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -100,7 +100,10 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
   let lastError;
 
   for (const model of FREE_MODELS) {
-    const API_BASE = window.Capacitor?.isNativePlatform() ? (process.env.REACT_APP_PRODUCTION_URL || '') : '';
+    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
+    const ctrl = new AbortController();
+    const timeoutId = setTimeout(() => ctrl.abort(), 8000); // 8-second fast switch timeout
+
     try {
       const res = await fetch(`${API_BASE}/api/ai`, {
         method: 'POST',
@@ -111,7 +114,9 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
           max_tokens: maxTokens,
           temperature: 0.3
         }),
+        signal: ctrl.signal
       });
+      clearTimeout(timeoutId);
 
       let data;
       try { data = await res.json(); } catch { data = {}; }
@@ -135,6 +140,11 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
       return text; // Success! Return the response.
 
     } catch (e) {
+      clearTimeout(timeoutId);
+      if (e.name === 'AbortError') {
+        lastError = 'TIMEOUT';
+        continue;
+      }
       if (e.message === 'NO_KEY' || e.message === 'SERVER_DOWN') throw e;
       lastError = e.message || 'UNKNOWN';
     }
