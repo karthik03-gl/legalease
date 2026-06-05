@@ -117,9 +117,9 @@ export default function SettingsScreen({ user, userData, onNav, onLogout }) {
         {/* Support */}
         <div className="settings-section-title">Support</div>
         <div className="settings-group">
-          <Row onClick={alertComingSoon} icon="ai"    iconBg="#EFF6FF" iconColor="#2563EB" label="Help centre"     sub="FAQs and guides" />
+          <Row onClick={() => onNav('help')} icon="ai"    iconBg="#EFF6FF" iconColor="#2563EB" label="Help centre"     sub="FAQs and guides" />
           <Row onClick={() => openLink('mailto:support@legalease.app')} icon="share" iconBg="#F5F3FF" iconColor="#7C3AED" label="Send feedback"   sub="Help us improve LegalEase" />
-          <Row onClick={alertComingSoon} icon="files" iconBg="#F1F5F9" iconColor="#64748B" label="Privacy policy"  sub="How we use your data" />
+          <Row onClick={() => onNav('privacy')} icon="files" iconBg="#F1F5F9" iconColor="#64748B" label="Privacy policy"  sub="How we use your data" />
         </div>
 
         {/* Danger zone */}

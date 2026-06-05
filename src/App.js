@@ -18,11 +18,14 @@ import DocumentsScreen  from './screens/Documents';
 import AskAIScreen      from './screens/AskAI';
 import ProfileScreen    from './screens/Profile';
 import SettingsScreen   from './screens/Settings';
+import HelpCenterScreen from './screens/HelpCenter';
+import PrivacyPolicyScreen from './screens/PrivacyPolicy';
 
 const ALL_SCREENS = [
   'onboarding','login','register','otp',
   'home','upload','processing','results',
-  'documents','askai','profile','settings'
+  'documents','askai','profile','settings',
+  'help','privacy'
 ];
 
 export default function App() {
@@ -216,6 +219,10 @@ export default function App() {
         onLogout={handleLogout}
       />
     ),
+
+    help: <HelpCenterScreen onBack={() => goBack('settings')} />,
+    
+    privacy: <PrivacyPolicyScreen onBack={() => goBack('settings')} />
   };
 
   const animClass = direction === 'back' ? 'screen-enter-back' : 'screen-enter';

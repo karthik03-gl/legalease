@@ -177,6 +177,14 @@ export async function saveDocumentAnalysis(uid, data) {
   });
 }
 
+// ── Get user documents from Firestore ───────────────────────
+export async function getUserDocuments(uid) {
+  const { collection, getDocs, query, orderBy } = await import('firebase/firestore');
+  const q = query(collection(db, 'users', uid, 'documents'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
 // ── Update User Profile ────────────────────────────────────
 export async function updateUserProfile(uid, name) {
   const user = auth.currentUser;

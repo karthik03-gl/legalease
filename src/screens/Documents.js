@@ -1,62 +1,80 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { StatusBar, BottomNav } from '../components/Layout';
 import Icon from '../components/Icon';
+import { getUserDocuments } from '../firebase/auth';
+import { auth } from '../firebase/config';
 import './Documents.css';
-
-const ALL_DOCS = [
-  { id: 1, name: 'Rental agreement.pdf',        date: 'Mar 25, 2026', time: '2:30 PM', type: 'rental',     size: '1.2 MB', pages: 4, tag: 'Rental',     tagClass: 'tag-blue',  iconBg: '#EFF6FF', iconColor: '#2563EB' },
-  { id: 2, name: 'Employment offer letter.pdf',  date: 'Mar 18, 2026', time: '11:15 AM', type: 'employment', size: '0.8 MB', pages: 3, tag: 'Employment', tagClass: 'tag-green', iconBg: '#ECFDF5', iconColor: '#059669' },
-  { id: 3, name: 'Loan sanction letter.pdf',     date: 'Mar 10, 2026', time: '9:00 AM',  type: 'finance',   size: '2.1 MB', pages: 6, tag: 'Finance',    tagClass: 'tag-amber', iconBg: '#FFFBEB', iconColor: '#D97706' },
-  { id: 4, name: 'Property sale deed.pdf',       date: 'Feb 28, 2026', time: '4:45 PM', type: 'legal',      size: '3.4 MB', pages: 12, tag: 'Legal',     tagClass: 'tag-blue',  iconBg: '#F5F3FF', iconColor: '#7C3AED' },
-  { id: 5, name: 'Insurance policy.pdf',         date: 'Feb 20, 2026', time: '1:00 PM', type: 'finance',    size: '1.6 MB', pages: 8, tag: 'Finance',    tagClass: 'tag-amber', iconBg: '#FFFBEB', iconColor: '#D97706' },
-  { id: 6, name: 'Court notice.pdf',             date: 'Feb 12, 2026', time: '10:30 AM', type: 'legal',     size: '0.5 MB', pages: 2, tag: 'Legal',     tagClass: 'tag-blue',  iconBg: '#FEF2F2', iconColor: '#DC2626' },
-];
 
 const FILTERS = ['All', 'Rental', 'Employment', 'Finance', 'Legal'];
 
 export default function DocumentsScreen({ onDoc, onUpload, onNav }) {
   const [search, setSearch]   = useState('');
   const [filter, setFilter]   = useState('All');
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDocs() {
+      if (!auth.currentUser) return;
+      try {
+        const docs = await getUserDocuments(auth.currentUser.uid);
+        setDocuments(docs);
+      } catch (err) {
+        console.error('Failed to fetch docs:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDocs();
+  }, []);
 
   const filtered = useMemo(() => {
-    return ALL_DOCS.filter(d => {
-      const matchSearch = d.name.toLowerCase().includes(search.toLowerCase());
-      const matchFilter = filter === 'All' || d.tag === filter;
+    return documents.filter(d => {
+      const name = d.fileName || 'Document';
+      const matchSearch = name.toLowerCase().includes(search.toLowerCase());
+      const matchFilter = filter === 'All' || d.type === filter.toLowerCase();
       return matchSearch && matchFilter;
     });
-  }, [search, filter]);
+  }, [search, filter, documents]);
 
-  // Group by date
-  const today    = filtered.filter(d => d.date === 'Mar 25, 2026');
-  const thisWeek = filtered.filter(d => ['Mar 18, 2026', 'Mar 10, 2026'].includes(d.date));
-  const older    = filtered.filter(d => !today.includes(d) && !thisWeek.includes(d));
+  // Format date correctly
+  const formatDate = (timestamp) => {
+    if (!timestamp) return 'Just now';
+    const d = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+  
+  const formatTime = (timestamp) => {
+    if (!timestamp) return '';
+    const d = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  };
 
-  const DocCard = ({ doc }) => (
-    <div className="doc-list-card" onClick={() => onDoc(doc)}>
-      <div className="doc-list-icon" style={{ background: doc.iconBg }}>
-        <Icon name="doc" size={20} color={doc.iconColor} />
-      </div>
-      <div className="doc-list-info">
-        <div className="doc-list-name">{doc.name}</div>
-        <div className="doc-list-meta">{doc.pages} pages · {doc.size}</div>
-        <div className="doc-list-tags">
-          <span className={`tag ${doc.tagClass}`}>{doc.tag}</span>
+  const DocCard = ({ doc }) => {
+    const isLegal = doc.type === 'legal' || doc.type === 'rental';
+    const tagClass = isLegal ? 'tag-blue' : 'tag-green';
+    const iconColor = isLegal ? '#2563EB' : '#059669';
+    const iconBg = isLegal ? '#EFF6FF' : '#ECFDF5';
+
+    return (
+      <div className="doc-list-card" onClick={() => onDoc(doc)}>
+        <div className="doc-list-icon" style={{ background: iconBg }}>
+          <Icon name="doc" size={20} color={iconColor} />
+        </div>
+        <div className="doc-list-info">
+          <div className="doc-list-name">{doc.fileName || 'Analyzed Document'}</div>
+          <div className="doc-list-meta">{doc.language ? doc.language.toUpperCase() : 'EN'} translation</div>
+          <div className="doc-list-tags">
+            <span className={`tag ${tagClass}`}>{doc.type || 'Document'}</span>
+          </div>
+        </div>
+        <div className="doc-list-right">
+          <div className="doc-list-time">{formatTime(doc.createdAt)}</div>
+          <Icon name="back" size={13} color="#CBD5E1" style={{ transform: 'scaleX(-1)' }} />
         </div>
       </div>
-      <div className="doc-list-right">
-        <div className="doc-list-time">{doc.time}</div>
-        <Icon name="back" size={13} color="#CBD5E1" style={{ transform: 'scaleX(-1)' }} />
-      </div>
-    </div>
-  );
-
-  const Section = ({ title, docs }) =>
-    docs.length > 0 ? (
-      <>
-        <div className="docs-section-label">{title}</div>
-        {docs.map(d => <DocCard key={d.id} doc={d} />)}
-      </>
-    ) : null;
+    );
+  };
 
   return (
     <div className="screen docs-screen" style={{ position: 'relative' }}>
@@ -66,7 +84,7 @@ export default function DocumentsScreen({ onDoc, onUpload, onNav }) {
         <div className="docs-title-row">
           <div>
             <div className="docs-title">My Documents</div>
-            <div className="docs-subtitle">{ALL_DOCS.length} documents analysed</div>
+            <div className="docs-subtitle">{documents.length} documents analysed</div>
           </div>
           <div style={{ width: 36, height: 36, borderRadius: 11, background: 'rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={onUpload}>
             <Icon name="plus" size={18} color="white" />
@@ -105,7 +123,9 @@ export default function DocumentsScreen({ onDoc, onUpload, onNav }) {
 
       {/* Document list */}
       <div className="scroll-body docs-body">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-mid)' }}>Loading...</div>
+        ) : filtered.length === 0 ? (
           <div className="docs-empty">
             <div className="docs-empty-icon">
               <Icon name="files" size={30} color="#94A3B8" />
@@ -117,9 +137,8 @@ export default function DocumentsScreen({ onDoc, onUpload, onNav }) {
           </div>
         ) : (
           <>
-            <Section title="Today"     docs={today}    />
-            <Section title="This Week" docs={thisWeek} />
-            <Section title="Earlier"   docs={older}    />
+            <div className="docs-section-label">All Saved Documents</div>
+            {filtered.map(d => <DocCard key={d.id} doc={d} />)}
           </>
         )}
         <div style={{ height: 16 }} />

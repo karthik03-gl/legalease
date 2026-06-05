@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from './Icon';
 
 export function StatusBar({ theme = 'blue' }) {
+  const [time, setTime] = useState(() => {
+    const now = new Date();
+    return now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date();
+      setTime(now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const timeClass = theme === 'light' ? 'status-time dark-text' : 'status-time';
   const dotClass  = theme === 'light' ? 'status-dot dark-dot'   : 'status-dot';
   return (
     <div className={`status-bar ${theme}`}>
-      <span className={timeClass}>9:41</span>
+      <span className={timeClass}>{time}</span>
       <div className="status-icons">
         <div className={dotClass} />
         <div className={dotClass} />
