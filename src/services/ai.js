@@ -61,10 +61,43 @@ export const readFileText = file => new Promise(resolve => {
 });
 
 export const readFileBase64 = file => new Promise(resolve => {
-  const r = new FileReader();
-  r.onload  = e => resolve((e.target?.result || '').split(',')[1] || '');
-  r.onerror = ()  => resolve('');
-  r.readAsDataURL(file);
+  if (!file || !file.type.startsWith('image/')) {
+    const r = new FileReader();
+    r.onload  = e => resolve((e.target?.result || '').split(',')[1] || '');
+    r.onerror = ()  => resolve('');
+    r.readAsDataURL(file);
+    return;
+  }
+  
+  // High-performance client-side image compression
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    let width = img.width;
+    let height = img.height;
+    const MAX_DIMENSION = 1024; // Limit to 1024px to ensure blazing fast uploads
+    
+    if (width > height) {
+      if (width > MAX_DIMENSION) { height *= MAX_DIMENSION / width; width = MAX_DIMENSION; }
+    } else {
+      if (height > MAX_DIMENSION) { width *= MAX_DIMENSION / height; height = MAX_DIMENSION; }
+    }
+    
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+    
+    // Convert to highly optimized JPEG
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+    URL.revokeObjectURL(img.src);
+    resolve(dataUrl.split(',')[1]);
+  };
+  img.onerror = () => {
+    URL.revokeObjectURL(img.src);
+    resolve('');
+  };
+  img.src = URL.createObjectURL(file);
 });
 
 /* ── Call OCR.Space ─────────────────────────────────────── */
