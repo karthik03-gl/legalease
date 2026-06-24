@@ -251,7 +251,18 @@ export async function analyseDocument(file, docType, lang, onStep) {
   // Step 1: Extract text or prepare image
   if (isImageFile(file)) {
     b64Image = await readFileBase64(file);
-    documentText = '(User provided an image of the document.)';
+    try {
+      const extractedText = await callOCR(b64Image);
+      if (extractedText && extractedText.trim().length > 10) {
+        documentText = extractedText;
+        b64Image = null; // Successfully extracted text! Clear the image so AI receives pure text.
+      } else {
+        documentText = '(User provided an image of the document, but no text was found.)';
+      }
+    } catch (e) {
+      console.warn("OCR failed, falling back to vision model", e);
+      documentText = '(User provided an image of the document.)';
+    }
   } else {
     documentText = await readFileText(file);
   }
