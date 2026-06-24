@@ -141,9 +141,9 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
       if (!res.ok) {
         if (res.status === 401) throw new Error('NO_KEY');
         if (res.status === 402) throw new Error('OUT_OF_CREDITS');
-        // If it's a 429 rate limit or 503 high demand, continue to the next model in the list
-        if (res.status === 429 || res.status === 503) {
-          lastError = res.status === 503 ? 'API_503' : 'RATE_LIMIT';
+        // If it's a rate limit (429), high demand (503), or unsupported model (404), continue to the next model in the list
+        if (res.status === 429 || res.status === 503 || res.status === 404) {
+          lastError = res.status === 503 ? 'API_503' : (res.status === 404 ? 'API_404' : 'RATE_LIMIT');
           continue;
         }
         throw new Error(`API_${res.status}`);

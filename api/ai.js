@@ -12,7 +12,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const isNativeGemini = req.body.model && !req.body.model.includes('/');
+  let requestedModel = req.body.model || '';
+  
+  // CACHE BUSTER: If the user's browser is caching the old OpenRouter model names, force-upgrade them to Google Native!
+  if (requestedModel.includes('google/gemini-2.0-flash-exp:free')) {
+    requestedModel = 'gemini-2.5-flash';
+    req.body.model = requestedModel;
+  }
+
+  const isNativeGemini = requestedModel && !requestedModel.includes('/');
   
   let endpoint = '';
   let apiKey = '';
