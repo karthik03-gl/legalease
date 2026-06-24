@@ -94,11 +94,14 @@ async function callOCR(base64Image) {
   return data.ParsedResults.map(p => p.ParsedText).join('\n');
 }
 
-/* ── Call AI Engine ────────────────────────────────────── */
+/* ── Call AI Engine (Hybrid Routing) ────────────────────────────────────── */
 const FREE_MODELS = [
-  'gemini-2.5-flash',
-  'gemini-2.0-flash',
-  'gemini-flash-latest'
+  'gemini-2.5-flash',                 // Native Gemini 
+  'gemini-2.0-flash',                 // Native Gemini
+  'gemini-flash-latest',              // Native Gemini
+  'google/gemini-2.0-flash-exp:free', // OpenRouter Fallback
+  'qwen/qwen-vl-plus:free',           // OpenRouter Vision Fallback
+  'qwen/qwen3-coder:free',            // OpenRouter Text Fallback
 ];
 
 async function callAI({ system, messages, maxTokens = 1000 }) {
