@@ -102,7 +102,7 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
   for (const model of FREE_MODELS) {
     const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
     const ctrl = new AbortController();
-    const timeoutId = setTimeout(() => ctrl.abort(), 8000); // 8-second fast switch timeout
+    const timeoutId = setTimeout(() => ctrl.abort(), 4000); // 4-second ultra-fast switch timeout
 
     try {
       const res = await fetch(`${API_BASE}/api/ai`, {
