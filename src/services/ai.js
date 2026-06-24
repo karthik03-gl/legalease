@@ -83,10 +83,10 @@ async function callOCR(base64Image) {
 
 /* ── Call OpenRouter ────────────────────────────────────── */
 const FREE_MODELS = [
+  'qwen/qwen3-coder:free',
   'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
   'poolside/laguna-xs.2:free',
   'minimax/minimax-m2.5:free',
-  'qwen/qwen3-coder:free',
   'meta-llama/llama-3.3-70b-instruct:free'
 ];
 
