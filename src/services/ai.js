@@ -4,7 +4,6 @@
  */
 
 export function friendlyError(code) {
-  const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
   if (!code) return 'Something went wrong. Please try again.';
   const MAP = {
     SERVER_DOWN:          'Proxy server is not running.\nFix: open a terminal → run: node server.js',
@@ -21,11 +20,25 @@ export function friendlyError(code) {
   return `Error (${code}). Please try again.`;
 }
 
+// Helper to dynamically get the correct API Base URL
+function getApiBase() {
+  // 1. Mobile app (Capacitor) must use the hardcoded remote server
+  if (window.Capacitor && window.Capacitor.isNative) {
+    return process.env.REACT_APP_PRODUCTION_URL || '';
+  }
+  // 2. Local computer (npm start) must use the remote server because there's no local backend running
+  if (window.location.hostname === 'localhost') {
+    return process.env.REACT_APP_PRODUCTION_URL || '';
+  }
+  // 3. Deployed Web must use relative paths to perfectly match its new domain
+  return '';
+}
+
 export async function checkHealth() {
   try {
     const ctrl = new AbortController();
     const id   = setTimeout(() => ctrl.abort(), 5000);
-    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
+    const API_BASE = getApiBase();
     const res  = await fetch(`${API_BASE}/api/health`, { signal: ctrl.signal });
     clearTimeout(id);
     if (!res.ok) return { ok: false, keyFound: false };
@@ -58,7 +71,7 @@ export const readFileBase64 = file => new Promise(resolve => {
 async function callOCR(base64Image) {
   let res;
   try {
-    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
+    const API_BASE = getApiBase();
     res = await fetch(`${API_BASE}/api/ocr`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -81,13 +94,11 @@ async function callOCR(base64Image) {
   return data.ParsedResults.map(p => p.ParsedText).join('\n');
 }
 
-/* ── Call OpenRouter ────────────────────────────────────── */
+/* ── Call AI Engine ────────────────────────────────────── */
 const FREE_MODELS = [
-  'google/gemini-2.0-flash-exp:free',
-  'qwen/qwen-vl-plus:free',
-  'qwen/qwen3-coder:free',
-  'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
-  'meta-llama/llama-3.3-70b-instruct:free'
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-flash-latest'
 ];
 
 async function callAI({ system, messages, maxTokens = 1000 }) {
@@ -100,7 +111,7 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
   let lastError;
 
   for (const model of FREE_MODELS) {
-    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
+    const API_BASE = getApiBase();
     const ctrl = new AbortController();
     const timeoutId = setTimeout(() => ctrl.abort(), 12000); // 12-second timeout (giving AI enough time to type)
 
