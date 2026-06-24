@@ -83,10 +83,10 @@ async function callOCR(base64Image) {
 
 /* ── Call OpenRouter ────────────────────────────────────── */
 const FREE_MODELS = [
+  'google/gemini-2.0-flash-exp:free',
+  'qwen/qwen-vl-plus:free',
   'qwen/qwen3-coder:free',
   'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
-  'poolside/laguna-xs.2:free',
-  'minimax/minimax-m2.5:free',
   'meta-llama/llama-3.3-70b-instruct:free'
 ];
 
@@ -195,22 +195,19 @@ CRITICAL: Return ONLY a raw JSON object matching the input structure. No markdow
 export async function analyseDocument(file, docType, lang, onStep) {
   onStep(0); // Uploading/Extracting
 
+  let b64Image = null;
   let documentText = '';
 
-  // Step 1: Extract text
+  // Step 1: Extract text or prepare image
   if (isImageFile(file)) {
-    const b64 = await readFileBase64(file);
-    try {
-      documentText = await callOCR(b64);
-    } catch (e) {
-      documentText = `(Image reading failed. Generate a realistic sample analysis for a ${docType} document)`;
-    }
+    b64Image = await readFileBase64(file);
+    documentText = '(User provided an image of the document.)';
   } else {
     documentText = await readFileText(file);
   }
 
   const hasText = documentText && documentText.trim().length > 10;
-  if (!hasText) {
+  if (!hasText && !b64Image) {
     documentText = `(Document text unreadable or empty. Generate a realistic sample analysis for a typical ${docType} document used in Bengaluru, India.)`;
   }
 
@@ -233,9 +230,19 @@ Required JSON (fill every field in the target language):
 
   onStep(2);
 
+  let messageContent;
+  if (b64Image) {
+    messageContent = [
+      { type: 'text', text: 'Please analyze this legal document image and extract the required details.' },
+      { type: 'image_url', image_url: { url: `data:${file.type || 'image/jpeg'};base64,${b64Image}` } }
+    ];
+  } else {
+    messageContent = `Document:\n${documentText.slice(0, 15000)}`;
+  }
+
   const raw = await callAI({
     system,
-    messages: [{ role: 'user', content: `Document:\n${documentText.slice(0, 15000)}` }],
+    messages: [{ role: 'user', content: messageContent }],
     maxTokens: 1000,
   });
 
