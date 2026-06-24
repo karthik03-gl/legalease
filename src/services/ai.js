@@ -109,7 +109,9 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
   formattedMessages.push(...messages);
 
   let lastError = null;
-  const TIMEOUT_MS = 30000; // Increased to 30 seconds for mobile/cold-starts(giving AI enough time to type)
+  // Smart timeout: 30s for images, 8s for text (so it switches models extremely fast if one hangs)
+  const isImageRequest = messages.some(m => Array.isArray(m.content) && m.content.some(c => c.type === 'image_url'));
+  const TIMEOUT_MS = isImageRequest ? 30000 : 8000;
 
   for (const model of FREE_MODELS) {
     const API_BASE = getApiBase();
@@ -136,9 +138,9 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
       if (!res.ok) {
         if (res.status === 401) throw new Error('NO_KEY');
         if (res.status === 402) throw new Error('OUT_OF_CREDITS');
-        // If it's a 429 rate limit, continue to the next model in the list
-        if (res.status === 429) {
-          lastError = 'RATE_LIMIT';
+        // If it's a 429 rate limit or 503 high demand, continue to the next model in the list
+        if (res.status === 429 || res.status === 503) {
+          lastError = res.status === 503 ? 'API_503' : 'RATE_LIMIT';
           continue;
         }
         throw new Error(`API_${res.status}`);
