@@ -4,7 +4,6 @@
  */
 
 export function friendlyError(code) {
-  const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
   if (!code) return 'Something went wrong. Please try again.';
   const MAP = {
     SERVER_DOWN:          'Proxy server is not running.\nFix: open a terminal → run: node server.js',
@@ -25,8 +24,7 @@ export async function checkHealth() {
   try {
     const ctrl = new AbortController();
     const id   = setTimeout(() => ctrl.abort(), 5000);
-    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
-    const res  = await fetch(`${API_BASE}/api/health`, { signal: ctrl.signal });
+    const res  = await fetch(`/api/health`, { signal: ctrl.signal });
     clearTimeout(id);
     if (!res.ok) return { ok: false, keyFound: false };
     const data = await res.json();
@@ -58,8 +56,7 @@ export const readFileBase64 = file => new Promise(resolve => {
 async function callOCR(base64Image) {
   let res;
   try {
-    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
-    res = await fetch(`${API_BASE}/api/ocr`, {
+    res = await fetch(`/api/ocr`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ base64Image: `data:image/jpeg;base64,${base64Image}` }),
@@ -100,12 +97,11 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
   let lastError;
 
   for (const model of FREE_MODELS) {
-    const API_BASE = process.env.REACT_APP_PRODUCTION_URL || '';
     const ctrl = new AbortController();
     const timeoutId = setTimeout(() => ctrl.abort(), 12000); // 12-second timeout (giving AI enough time to type)
 
     try {
-      const res = await fetch(`${API_BASE}/api/ai`, {
+      const res = await fetch(`/api/ai`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
