@@ -129,12 +129,12 @@ async function callOCR(base64Image) {
 
 /* ── Call AI Engine (Hybrid Routing) ────────────────────────────────────── */
 const FREE_MODELS = [
+  'gemini-2.5-flash-lite',            // Native Gemini (High Quota / Fast)
   'gemini-2.5-flash',                 // Native Gemini 
   'gemini-2.0-flash',                 // Native Gemini
   'gemini-flash-latest',              // Native Gemini
-  'google/gemini-2.0-flash-exp:free', // OpenRouter Fallback
-  'qwen/qwen-vl-plus:free',           // OpenRouter Vision Fallback
-  'qwen/qwen3-coder:free',            // OpenRouter Text Fallback
+  'openrouter/free',                  // OpenRouter Universal Free Fallback
+  'google/gemma-4-31b-it:free',       // OpenRouter Text Fallback
 ];
 
 async function callAI({ system, messages, maxTokens = 1000 }) {
