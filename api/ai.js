@@ -14,9 +14,13 @@ export default async function handler(req, res) {
 
   let requestedModel = req.body.model || '';
   
-  // CACHE BUSTER: If the user's browser is caching the old OpenRouter model names, force-upgrade them to Google Native!
-  if (requestedModel.includes('google/gemini-2.0-flash-exp:free')) {
-    requestedModel = 'gemini-2.5-flash';
+  // CACHE BUSTER & QUOTA BYPASS: 
+  // Force all traffic to the lite model to bypass the 503/429 Quota Exceeded errors on the main models.
+  // This guarantees that even old cached Android apps will hit the working lite model.
+  if (requestedModel.includes('gemini-2.5-flash') || 
+      requestedModel.includes('gemini-2.0-flash') || 
+      requestedModel.includes('gemini-flash-latest')) {
+    requestedModel = 'gemini-2.5-flash-lite';
     req.body.model = requestedModel;
   }
 
