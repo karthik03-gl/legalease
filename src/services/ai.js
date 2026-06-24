@@ -108,12 +108,13 @@ async function callAI({ system, messages, maxTokens = 1000 }) {
   }
   formattedMessages.push(...messages);
 
-  let lastError;
+  let lastError = null;
+  const TIMEOUT_MS = 30000; // Increased to 30 seconds for mobile/cold-starts(giving AI enough time to type)
 
   for (const model of FREE_MODELS) {
     const API_BASE = getApiBase();
     const ctrl = new AbortController();
-    const timeoutId = setTimeout(() => ctrl.abort(), 12000); // 12-second timeout (giving AI enough time to type)
+    const timeoutId = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
 
     try {
       const res = await fetch(`${API_BASE}/api/ai`, {
